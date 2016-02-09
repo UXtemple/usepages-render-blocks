@@ -2,17 +2,20 @@ import React from 'react';
 
 export default function render(blocks, sources, keyPrefix) {
   if (blocks && typeof blocks.map === 'function') {
-    return blocks.map((block, i) => {
+    return blocks.map((instance, i) => {
       try {
-        const Block = sources[block.type] || sources.Unknown;
-        return <Block {...block.props} key={`${keyPrefix}-${i}`} />;
+        // TODO remove once we've fully migrated block instead of type
+        const block = instance.block || instance.type;
+
+        const Block = sources[block] || sources.Unknown;
+        return <Block {...instance.props} key={`${keyPrefix}-${i}`} _block={block} />;
       } catch(err) {
-        const givenProps = Object.keys(block.props)
-          .map(key => <span key={key}>`${key}: ${block.props[key]}`</span>).join('\n');
+        const givenProps = Object.keys(instance.props)
+          .map(key => <span key={key}>`${key}: ${instance.props[key]}`</span>).join('\n');
 
         return (
           <div style={style.error}>
-            <div>We couldn't render your block {block.type}.</div>
+            <div>We couldn't render your block {block}.</div>
             <div>You gave it these props:</div>
             <div>{JSON.stringify(givenProps)}</div>
 
