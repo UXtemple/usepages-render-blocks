@@ -1,6 +1,17 @@
 import React from 'react';
 import shouldRender from './should-render';
 
+function raw(props={}, panelProps={}) {
+  let rawProps = {};
+
+  Object.keys(props).forEach(key => {
+    const match = typeof props[key] === 'string' && props[key].match(/^props\.(.+)/);
+    rawProps[key] = match ? panelProps[match[1]] : props[key];
+  });
+
+  return rawProps;
+}
+
 export default function render(blocks, sources, keyPrefix, props={}) {
   if (blocks && typeof blocks.map === 'function') {
     return blocks.map((instance, i) => {
@@ -12,7 +23,9 @@ export default function render(blocks, sources, keyPrefix, props={}) {
 
         const Block = sources[block] || sources.Unknown;
 
-        return <Block {...instance.props} key={`${keyPrefix}-${i}`} _block={block} />;
+        const rawProps = raw(instance.props, props);
+
+        return <Block {...rawProps} key={`${keyPrefix}-${i}`} _block={block} />;
       } catch(err) {
         const givenProps = Object.keys(instance.props)
           .map(key => <span key={key}>`${key}: ${instance.props[key]}`</span>);
