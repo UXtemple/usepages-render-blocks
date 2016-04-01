@@ -6,7 +6,7 @@ function raw(props={}, panelProps={}) {
 
   Object.keys(props).forEach(key => {
     const match = typeof props[key] === 'string' && props[key].match(/^props\.(.+)/);
-    rawProps[key] = match ? panelProps[match[1]] : props[key];
+    rawProps[key] = match && panelProps[match[1]] ? panelProps[match[1]] : props[key];
   });
 
   return rawProps;
