@@ -1,4 +1,4 @@
-const BLACKLIST = [
+const RESERVED = [
   'break',
   'case',
   'class',
@@ -18,7 +18,6 @@ const BLACKLIST = [
   'if',
   'import',
   'in',
-  'instanceof',
   'new',
   'return',
   'super',
@@ -61,7 +60,10 @@ const BLACKLIST = [
   'Boolean',
   'Number',
   'RegExp',
-  'String',
+  'String'
+].map(w => `\\s+${w}\\s+|^${w}$|\\s+${w}$|^${w}\\s+`).join('|');
+
+const SYMBOLS = [
   ';',
   '\\(',
   '\\)',
@@ -69,4 +71,4 @@ const BLACKLIST = [
   '[\\s+|\\w+]=[\\s+|\\w+]'
 ].join('|');
 
-export default new RegExp(BLACKLIST, 'i');
+export default new RegExp(`${RESERVED}|${SYMBOLS}`, 'i');
